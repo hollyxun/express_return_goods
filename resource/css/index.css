@@ -1,159 +1,159 @@
+/* 字体定义 */
 @font-face {
     font-family: MiSansRegular;
     font-style: normal;
-    src: url("../fonts/MiSans-Regular.woff2") format("woff2")
+    src: url("../fonts/MiSans-Regular.woff2") format("woff2");
 }
 
 @font-face {
     font-family: 'SF Pro';
     font-style: normal;
-    src: url("../fonts/SFPro-Regular.woff2") format("woff2")
+    src: url("../fonts/SFPro-Regular.woff2") format("woff2");
 }
 
 @font-face {
     font-family: 'PingFang';
     font-style: normal;
-    src: url("../fonts/PingFangSC-Regular.woff2") format("woff2")
+    src: url("../fonts/PingFangSC-Regular.woff2") format("woff2");
+}
+
+/* 全局样式 */
+:root {
+    --font-misans: MiSansRegular;
+    --font-sf-pro: "SF Pro";
+    --font-pingfang: "PingFang";
+    --color-text: #666;
+    --color-black: #000000;
+    --color-copy: #fc590a;
+    --container-width: 432px;
+    --container-height: 984px;
 }
 
 body, html {
     width: 100%;
     height: 100%;
-    margin: 0
+    margin: 0;
 }
 
 .fs14 {
     font-size: 14px;
-    color: #666
+    color: var(--color-text);
 }
 
 .w250 {
-    width: 250px !important
+    width: 250px !important;
 }
 
 .container {
     width: 100%;
     height: 100%;
     padding: 40px;
-    box-sizing: border-box
+    box-sizing: border-box;
 }
 
-.android-container {
-    width: 432px;
-    height: 984px;
-    position: relative
+/* 容器样式 */
+.android-container, .ios-container {
+    width: var(--container-width);
+    height: var(--container-height);
+    position: relative;
 }
 
-.android-container .bg-image {
-    width: 100%
-}
-
-.android-container .show {
-    background-color: #ffffff;
-    width: 50px;
-    height: 20px;
-    position: absolute;
-    top: 16px;
-    right: 102px;
-}
-
-.android-container .time {
-    position: absolute;
-    top: 15px;
-    left: 16px;
-    color: #000000;
-    font-family: MiSansRegular
-}
-
-.android-container .address-first {
-    position: absolute;
-    top: 602px;
-    left: 90px;
-    font-family: MiSansRegular
-}
-
-.android-container .address-last {
-    position: absolute;
-    top: 626px;
-    left: 90px;
-    font-family: MiSansRegular
-}
-
-.android-container .name {
-    position: absolute;
-    top: 658px;
-    left: 90px;
-    font-family: MiSansRegular
-}
-
-.android-container .mobile {
-    position: absolute;
-    top: 691px;
-    left: 90px;
-    font-family: MiSansRegular
-}
-
-.ios-container {
-    width: 432px;
-    height: 984px;
-    position: relative
-}
-
-.ios-container .bg-image {
+.android-container .bg-image, .ios-container .bg-image {
     width: 100%;
 }
 
-.ios-container .show {
-    width: 30px;
-    height: 30px;
-    background: #f4f5f5;
-    position: absolute;
-    left: 96px;
-    top: 14px;
+/* Android 容器样式 */
+.android-container {
+    /* 时间 */
+    .time {
+        position: absolute;
+        top: 15px;
+        left: 16px;
+        color: var(--color-black);
+        font-family: var(--font-misans);
+    }
+
+    /* 地址和姓名 */
+    .address-first, .address-last, .name, .mobile {
+        position: absolute;
+        left: 90px;
+        font-family: var(--font-misans);
+    }
+
+    .address-first { top: 602px; }
+    .address-last { top: 626px; }
+    .name { top: 658px; }
+    .mobile { top: 691px; }
+
+    /* 图标显示 */
+    .show {
+        background-color: #ffffff;
+        width: 50px;
+        height: 20px;
+        position: absolute;
+        top: 16px;
+        right: 102px;
+    }
 }
 
-.ios-container .time {
-    position: absolute;
-    color: #000000;
-    font-family: "SF Pro";
-    top: 20px;
-    left: 36px;
-    font-size: 19px;
-    font-weight: 600
+/* iOS 容器样式 */
+.ios-container {
+    /* 时间 */
+    .time {
+        position: absolute;
+        top: 20px;
+        left: 36px;
+        color: var(--color-black);
+        font-family: var(--font-sf-pro);
+        font-size: 19px;
+        font-weight: 600;
+    }
+
+    /* 图标显示 */
+    .show {
+        width: 30px;
+        height: 30px;
+        background: #f4f5f5;
+        position: absolute;
+        left: 96px;
+        top: 14px;
+    }
+
+    /* 地址和姓名 */
+    .name {
+        position: absolute;
+        top: 506px;
+        left: 90px;
+        font-size: 18px;
+        font-weight: 600;
+        font-family: var(--font-pingfang);
+        color: var(--color-black);
+    }
+
+    .mobile {
+        position: absolute;
+        top: 510px;
+        left: 164px;
+        font-size: 14px;
+        color: var(--color-text);
+        font-family: var(--font-sf-pro);
+    }
+
+    .address {
+        position: absolute;
+        top: 535px;
+        left: 20px;
+        font-size: 15px;
+        color: var(--color-black);
+        font-family: var(--font-pingfang);
+    }
+
+    .copy {
+        color: var(--color-copy);
+    }
 }
 
-.ios-container .name {
-    position: absolute;
-    top: 506px;
-    left: 90px;
-    font-size: 18px;
-    font-weight: 600;
-    font-family: "PingFang";
-    color: #000000
-}
-
-.ios-container .mobile {
-    position: absolute;
-    top: 510px;
-    left: 164px;
-    font-size: 14px;
-    color: #666;
-    font-family: "SF Pro"
-}
-
-.ios-container .address {
-    position: absolute;
-    top: 535px;
-    left: 20px;
-    font-size: 15px;
-    color: #000000;
-    font-family: "PingFang"
-}
-
-.ios-container .copy {
-    color: #fc590a
-}
-
+/* 表单容器样式 */
 .form-container {
     width: 400px;
     margin-top: 30px;

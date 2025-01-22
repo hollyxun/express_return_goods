@@ -2,8 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0,
-                                 maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>退货生成</title>
     <!-- Import html2canvas -->
     <script src="./resource/js/html2canvas.min.js"></script>
@@ -19,6 +18,7 @@
 <body>
 <div class="container" id="app">
     <el-row :gutter="10">
+        <!-- Android 屏幕 -->
         <el-col :xs="24" :sm="10" :md="8" :lg="8" :xl="8">
             <div class="android-container" id="screen-android">
                 <img class="bg-image" src="./resource/img/android-bg.png" alt=""/>
@@ -30,6 +30,7 @@
                 <div class="mobile fs14">{{content.mobile}}</div>
             </div>
         </el-col>
+        <!-- iOS 屏幕 -->
         <el-col :xs="24" :sm="10" :md="8" :lg="8" :xl="8">
             <div class="ios-container" id="screen-ios">
                 <img class="bg-image" src="./resource/img/ios-bg.png" alt=""/>
@@ -40,6 +41,7 @@
                 <div class="mobile fs14">{{content.mobile}}</div>
             </div>
         </el-col>
+        <!-- 配置表单 -->
         <el-col :xs="24" :sm="4" :md="8" :lg="8" :xl="8">
             <el-card shadow="always" class="form-container">
                 <template #header>
@@ -56,16 +58,16 @@
                                 class="w250"
                                 v-model="content.time"
                                 format="HH:mm"
-                                value-format="HH:mm"/>
+                                value-format="HH:mm"></el-time-picker>
                     </el-form-item>
                     <el-form-item label="姓名">
                         <el-input v-model="content.name" class="w250"/>
                     </el-form-item>
                     <el-form-item label="地址(首行)">
-                        <el-input v-model="content.addressFirst" class="w250" @input="handleAddress"/>
+                        <el-input v-model="content.addressFirst" class="w250"/>
                     </el-form-item>
                     <el-form-item label="地址(尾行)">
-                        <el-input v-model="content.addressLast" class="w250" @input="handleAddress"/>
+                        <el-input v-model="content.addressLast" class="w250"/>
                     </el-form-item>
                     <el-form-item label="手机号码">
                         <el-input v-model="content.mobile" class="w250"/>
@@ -80,8 +82,9 @@
     </el-row>
 </div>
 <script>
-    const {createApp, ref, reactive, onMounted} = Vue
+    const {createApp, reactive, onMounted, watch} = Vue;
 
+    // 格式化当前时间
     function formatCurrentTime() {
         const now = new Date();
         const hours = now.getHours().toString().padStart(2, '0');
@@ -89,6 +92,7 @@
         return `${hours}:${minutes}`;
     }
 
+    // 创建 Vue 应用
     createApp({
         setup() {
             const content = reactive({
@@ -99,13 +103,21 @@
                 mobile: '18912345678',
                 address: '',
                 time: formatCurrentTime(),
-            })
+            });
 
-
+            // 自动拼接地址
             const handleAddress = () => {
-                content.address = `${content.addressFirst}${content.addressLast}    <span class="copy">复制</span>`
-            }
+                content.address = `${content.addressFirst}${content.addressLast} <span class="copy">复制</span>`;
+            };
 
+            // 监听地址变化，自动更新
+            onMounted(() => {
+                handleAddress();
+            });
+
+            watch(() => [content.addressFirst, content.addressLast], handleAddress);
+
+            // 截图功能
             const onCreate = (id) => {
                 const node = document.getElementById(id);
                 html2canvas(node, {
@@ -115,33 +127,27 @@
                     scrollY: 0,
                     scrollX: 0
                 }).then(canvas => {
-                    const imgUrl = canvas.toDataURL('image/jpeg')
+                    const imgUrl = canvas.toDataURL('image/jpeg');
                     const a = document.createElement('a');
                     a.href = imgUrl;
-                    a.download = Date.now() + '.png';
+                    a.download = `${Date.now()}.png`;
                     a.click();
                     a.remove();
-                    ElementPlus.ElMessage.success('操作成功')
-                }).catch(function (error) {
-                    console.error('oops, something went wrong!', error);
-                    ElementPlus.ElMessage.error('发生失败，请重试')
+                    ElementPlus.ElMessage.success('截图成功');
+                }).catch(error => {
+                    console.error('截图失败:', error);
+                    ElementPlus.ElMessage.error('截图失败，请重试');
                 });
-
-            }
-            onMounted(() => {
-                handleAddress()
-            });
+            };
 
             return {
                 content,
-                onCreate,
-                handleAddress
-            }
+                onCreate
+            };
         }
     })
         .use(ElementPlus)
         .mount("#app");
 </script>
-
 </body>
 </html>
