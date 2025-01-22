@@ -1,0 +1,160 @@
+@font-face {
+    font-family: MiSansRegular;
+    font-style: normal;
+    src: url("../fonts/MiSans-Regular.woff2") format("woff2")
+}
+
+@font-face {
+    font-family: 'SF Pro';
+    font-style: normal;
+    src: url("../fonts/SFPro-Regular.woff2") format("woff2")
+}
+
+@font-face {
+    font-family: 'PingFang';
+    font-style: normal;
+    src: url("../fonts/PingFangSC-Regular.woff2") format("woff2")
+}
+
+body, html {
+    width: 100%;
+    height: 100%;
+    margin: 0
+}
+
+.fs14 {
+    font-size: 14px;
+    color: #666
+}
+
+.w250 {
+    width: 250px !important
+}
+
+.container {
+    width: 100%;
+    height: 100%;
+    padding: 40px;
+    box-sizing: border-box
+}
+
+.android-container {
+    width: 432px;
+    height: 984px;
+    position: relative
+}
+
+.android-container .bg-image {
+    width: 100%
+}
+
+.android-container .show {
+    background-color: #ffffff;
+    width: 50px;
+    height: 20px;
+    position: absolute;
+    top: 16px;
+    right: 102px;
+}
+
+.android-container .time {
+    position: absolute;
+    top: 15px;
+    left: 16px;
+    color: #000000;
+    font-family: MiSansRegular
+}
+
+.android-container .address-first {
+    position: absolute;
+    top: 602px;
+    left: 90px;
+    font-family: MiSansRegular
+}
+
+.android-container .address-last {
+    position: absolute;
+    top: 626px;
+    left: 90px;
+    font-family: MiSansRegular
+}
+
+.android-container .name {
+    position: absolute;
+    top: 658px;
+    left: 90px;
+    font-family: MiSansRegular
+}
+
+.android-container .mobile {
+    position: absolute;
+    top: 691px;
+    left: 90px;
+    font-family: MiSansRegular
+}
+
+.ios-container {
+    width: 432px;
+    height: 984px;
+    position: relative
+}
+
+.ios-container .bg-image {
+    width: 100%;
+}
+
+.ios-container .show {
+    width: 30px;
+    height: 30px;
+    background: #f4f5f5;
+    position: absolute;
+    left: 96px;
+    top: 14px;
+}
+
+.ios-container .time {
+    position: absolute;
+    color: #000000;
+    font-family: "SF Pro";
+    top: 20px;
+    left: 36px;
+    font-size: 19px;
+    font-weight: 600
+}
+
+.ios-container .name {
+    position: absolute;
+    top: 506px;
+    left: 90px;
+    font-size: 18px;
+    font-weight: 600;
+    font-family: "PingFang";
+    color: #000000
+}
+
+.ios-container .mobile {
+    position: absolute;
+    top: 510px;
+    left: 164px;
+    font-size: 14px;
+    color: #666;
+    font-family: "SF Pro"
+}
+
+.ios-container .address {
+    position: absolute;
+    top: 535px;
+    left: 20px;
+    font-size: 15px;
+    color: #000000;
+    font-family: "PingFang"
+}
+
+.ios-container .copy {
+    color: #fc590a
+}
+
+.form-container {
+    width: 400px;
+    margin-top: 30px;
+}
