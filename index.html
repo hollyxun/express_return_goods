@@ -1,88 +1,154 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="description" content="快递退货单生成工具，支持Android和iOS风格截图">
+    <meta name="keywords" content="快递,退货,截图,工具">
+    <meta name="author" content="Express Return Generator">
+    <meta name="theme-color" content="#ffffff">
     <title>退货生成</title>
     <!-- Import html2canvas -->
-    <script src="./resource/js/html2canvas.min.js"></script>
+    <script src="/resource/js/html2canvas.min.js"></script>
     <!-- import Vue3 -->
-    <script src="./resource/js/vue.global.min.js"></script>
+    <script src="/resource/js/vue.global.min.js"></script>
     <!-- Import Element style -->
-    <link rel="stylesheet" href="./resource/css/element.css"/>
+    <link rel="stylesheet" href="/resource/css/element.css"/>
     <!-- Import component library -->
-    <script src="resource/js/element.full.min.js"></script>
+    <script src="/resource/js/element.full.min.js"></script>
     <!-- Import HTML style -->
-    <link rel="stylesheet" href="./resource/css/index.css"/>
+    <link rel="stylesheet" href="/resource/css/index.css"/>
+    <!-- 添加favicon -->
+    <link rel="icon"
+          href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📦</text></svg>">
 </head>
 <body>
 <div class="container" id="app">
-    <el-row :gutter="10">
+    <!-- 页面标题 -->
+    <el-row class="page-header">
+        <el-col :span="24">
+            <h1 class="text-center">快递退货单生成工具</h1>
+            <p class="text-center text-muted">支持Android和iOS风格截图</p>
+        </el-col>
+    </el-row>
+
+    <el-row :gutter="20">
         <!-- Android 屏幕 -->
-        <el-col :xs="24" :sm="10" :md="8" :lg="8" :xl="8">
-            <div class="android-container" id="screen-android">
-                <img class="bg-image" src="./resource/img/android-bg.png" alt=""/>
-                <div class="time fs14">{{content.time}}</div>
-                <div class="show" v-show="!content.show"></div>
-                <div class="address-first fs14">{{content.addressFirst}}</div>
-                <div class="address-last fs14">{{content.addressLast}}</div>
-                <div class="name fs14"> {{content.name}}</div>
-                <div class="mobile fs14">{{content.mobile}}</div>
+        <el-col :xs="24" :sm="12" :md="8" :lg="8" :xl="8" class="mb-20">
+            <div class="preview-wrapper">
+                <div class="android-container" id="screen-android">
+                    <img class="bg-image" src="/resource/img/android-bg.png" alt="Android背景"/>
+                    <div class="time fs14">{{content.time}}</div>
+                    <div class="show" v-show="!content.show"></div>
+                    <div class="address-first fs14">{{content.addressFirst}}</div>
+                    <div class="address-last fs14">{{content.addressLast}}</div>
+                    <div class="name fs14">{{content.name}}</div>
+                    <div class="mobile fs14">{{content.mobile}}</div>
+                </div>
+                <div class="preview-actions">
+                    <el-button type="primary" size="small" @click="onCreate('screen-android')" :loading="isLoading">
+                        <i class="el-icon-camera"></i> 生成Android截图
+                    </el-button>
+                </div>
             </div>
         </el-col>
+
         <!-- iOS 屏幕 -->
-        <el-col :xs="24" :sm="10" :md="8" :lg="8" :xl="8">
-            <div class="ios-container" id="screen-ios">
-                <img class="bg-image" src="./resource/img/ios-bg.png" alt=""/>
-                <div class="show" v-show="!content.show"></div>
-                <div class="time fs14">{{content.time}}</div>
-                <div class="address fs14" v-html="content.address"></div>
-                <div class="name fs14"> {{content.name}}</div>
-                <div class="mobile fs14">{{content.mobile}}</div>
+        <el-col :xs="24" :sm="12" :md="8" :lg="8" :xl="8" class="mb-20">
+            <div class="preview-wrapper">
+                <div class="ios-container" id="screen-ios">
+                    <img class="bg-image" src="/resource/img/ios-bg.png" alt="iOS背景"/>
+                    <div class="show" v-show="!content.show"></div>
+                    <div class="time fs14">{{content.time}}</div>
+                    <div class="address fs14" v-html="content.address"></div>
+                    <div class="name fs14">{{content.name}}</div>
+                    <div class="mobile fs14">{{content.mobile}}</div>
+                </div>
+                <div class="preview-actions">
+                    <el-button type="primary" size="small" @click="onCreate('screen-ios')" :loading="isLoading">
+                        <i class="el-icon-camera"></i> 生成iOS截图
+                    </el-button>
+                </div>
             </div>
         </el-col>
+
         <!-- 配置表单 -->
-        <el-col :xs="24" :sm="4" :md="8" :lg="8" :xl="8">
-            <el-card shadow="always" class="form-container">
+        <el-col :xs="24" :sm="24" :md="8" :lg="8" :xl="8">
+            <el-card shadow="hover" class="form-container">
                 <template #header>
                     <div class="card-header">
-                        <span>配置项</span>
+                        <span><i class="el-icon-setting"></i> 配置项</span>
+                        <span v-if="fileName" class="file-name-preview">文件名: {{fileName}}.png</span>
                     </div>
                 </template>
-                <el-form label-width="auto" :model="content" label-position="left">
+
+                <el-form label-width="auto" :model="content" label-position="left" size="small">
                     <el-form-item label="图标显示">
-                        <el-switch v-model="content.show"></el-switch>
+                        <el-switch v-model="content.show" active-text="显示" inactive-text="隐藏"></el-switch>
                     </el-form-item>
+
                     <el-form-item label="时间">
                         <el-time-picker
                                 class="w250"
                                 v-model="content.time"
                                 format="HH:mm"
-                                value-format="HH:mm"></el-time-picker>
+                                value-format="HH:mm"
+                                placeholder="选择时间"></el-time-picker>
                     </el-form-item>
+
                     <el-form-item label="姓名">
-                        <el-input v-model="content.name" class="w250"/>
+                        <el-input v-model="content.name" class="w250" placeholder="收件人姓名"/>
                     </el-form-item>
+
                     <el-form-item label="地址(首行)">
-                        <el-input v-model="content.addressFirst" class="w250"/>
+                        <el-input v-model="content.addressFirst" class="w250" placeholder="省市区街道"/>
                     </el-form-item>
+
                     <el-form-item label="地址(尾行)">
-                        <el-input v-model="content.addressLast" class="w250"/>
+                        <el-input v-model="content.addressLast" class="w250" placeholder="小区楼栋单元"/>
                     </el-form-item>
+
                     <el-form-item label="手机号码">
-                        <el-input v-model="content.mobile" class="w250"/>
+                        <el-input v-model="content.mobile" class="w250" placeholder="收件人手机号"/>
                     </el-form-item>
+
                     <el-form-item>
-                        <el-button type="primary" @click="onCreate('screen-android')">截图A</el-button>
-                        <el-button type="primary" @click="onCreate('screen-ios')">截图B</el-button>
+                        <div class="action-buttons">
+                            <el-button type="success" @click="onCreate('screen-android')" :loading="isLoading"
+                                       icon="el-icon-mobile">
+                                生成Android截图
+                            </el-button>
+                            <el-button type="primary" @click="onCreate('screen-ios')" :loading="isLoading"
+                                       icon="el-icon-mobile">
+                                生成iOS截图
+                            </el-button>
+                        </div>
                     </el-form-item>
                 </el-form>
+
+                <!-- 使用说明 -->
+                <div class="tips-section">
+                    <h4><i class="el-icon-info"></i> 使用说明</h4>
+                    <ol>
+                        <li>填写表单信息</li>
+                        <li>点击对应按钮生成截图</li>
+                        <li>图片将自动下载到您的设备</li>
+                    </ol>
+                </div>
             </el-card>
+        </el-col>
+    </el-row>
+
+    <!-- 页脚 -->
+    <el-row class="footer">
+        <el-col :span="24">
+            <p class="text-center">© {{new Date().getFullYear()}} 退货单生成工具 | 使用 <a
+                    href="https://html2canvas.hertzen.com/" target="_blank">html2canvas</a> 技术</p>
         </el-col>
     </el-row>
 </div>
 <script>
-    const {createApp, reactive, onMounted, watch} = Vue;
+    const {createApp, reactive, ref, onMounted, watch} = Vue;
 
     // 格式化当前时间
     function formatCurrentTime() {
@@ -92,9 +158,20 @@
         return `${hours}:${minutes}`;
     }
 
+    // 格式化文件名
+    function formatFileName(prefix) {
+        const now = new Date();
+        const dateStr = now.toISOString().slice(0, 10).replace(/-/g, '');
+        const timeStr = now.toTimeString().slice(0, 8).replace(/:/g, '');
+        return `${prefix}_${dateStr}_${timeStr}`;
+    }
+
     // 创建 Vue 应用
     createApp({
         setup() {
+            // 状态管理
+            const isLoading = ref(false);
+            const fileName = ref('');
             const content = reactive({
                 show: false,
                 name: '王小图',
@@ -110,38 +187,79 @@
                 content.address = `${content.addressFirst}${content.addressLast} <span class="copy">复制</span>`;
             };
 
-            // 监听地址变化，自动更新
+            // 更新文件名
+            const updateFileName = (type) => {
+                const prefix = type === 'screen-android' ? 'Android' : 'iOS';
+                fileName.value = formatFileName(prefix);
+            };
+
+            // 生命周期钩子
             onMounted(() => {
                 handleAddress();
+                // 每分钟更新一次时间
+                setInterval(() => {
+                    content.time = formatCurrentTime();
+                }, 60000);
             });
 
+            // 监听地址变化，自动更新
             watch(() => [content.addressFirst, content.addressLast], handleAddress);
 
             // 截图功能
-            const onCreate = (id) => {
-                const node = document.getElementById(id);
-                html2canvas(node, {
-                    useCORS: true,
-                    height: node.offsetHeight,
-                    width: node.offsetWidth,
-                    scrollY: 0,
-                    scrollX: 0
-                }).then(canvas => {
-                    const imgUrl = canvas.toDataURL('image/jpeg');
+            const onCreate = async (id) => {
+                try {
+                    // 设置加载状态
+                    isLoading.value = true;
+                    updateFileName(id);
+
+                    const node = document.getElementById(id);
+                    // 确保节点存在
+                    if (!node) {
+                        throw new Error(`找不到ID为${id}的元素`);
+                    }
+
+                    // 优化移动设备体验
+                    const isMobile = window.innerWidth <= 768;
+                    const scaleValue = isMobile ? window.devicePixelRatio * 1.5 : window.devicePixelRatio * 2;
+
+                    const canvas = await html2canvas(node, {
+                        useCORS: true,
+                        height: node.offsetHeight,
+                        width: node.offsetWidth,
+                        scrollY: 0,
+                        scrollX: 0,
+                        scale: scaleValue, // 根据设备类型调整缩放比例
+                        logging: false, // 生产环境关闭日志
+                        backgroundColor: null, // 保持透明背景
+                        allowTaint: false, // 不允许污染
+                        imageTimeout: 15000, // 图片加载超时时间
+                        onclone: (document) => {
+                            // 在克隆的文档中可以进行额外处理
+                            console.log('文档已克隆，准备渲染');
+                        }
+                    });
+
+                    // 使用PNG格式保存，保持高质量和透明度
+                    const imgUrl = canvas.toDataURL('image/png', 1.0);
                     const a = document.createElement('a');
                     a.href = imgUrl;
-                    a.download = `${Date.now()}.png`;
+                    a.download = `${fileName.value}.png`;
                     a.click();
                     a.remove();
                     ElementPlus.ElMessage.success('截图成功');
-                }).catch(error => {
+                } catch (error) {
                     console.error('截图失败:', error);
-                    ElementPlus.ElMessage.error('截图失败，请重试');
-                });
+                    ElementPlus.ElMessage.error(`截图失败: ${error.message || '请重试'}`);
+                } finally {
+                    // 无论成功失败都重置加载状态
+                    isLoading.value = false;
+                }
             };
 
             return {
                 content,
+                isLoading,
+                fileName,
                 onCreate
             };
         }
